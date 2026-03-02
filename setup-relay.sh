@@ -126,6 +126,11 @@ fi
 step "4/7  Installing systemd service"
 RELAY_BIN="${INSTALL_DIR}/relay"
 
+# Ensure relay user owns the install dir and db directories exist
+chown -R "${RELAY_USER}:${RELAY_USER}" "${INSTALL_DIR}"
+mkdir -p "${INSTALL_DIR}/relay_db" "${INSTALL_DIR}/relay_db_${RELAY_PORT}"
+chown -R "${RELAY_USER}:${RELAY_USER}" "${INSTALL_DIR}/relay_db" "${INSTALL_DIR}/relay_db_${RELAY_PORT}"
+
 cat > /etc/systemd/system/${SERVICE_NAME}.service <<EOF
 [Unit]
 Description=DecentMesh Relay
@@ -140,7 +145,7 @@ WorkingDirectory=${INSTALL_DIR}
 Environment=RUST_LOG=info
 Environment=RUST_BACKTRACE=1
 
-ExecStart=${RELAY_BIN} --port ${RELAY_PORT}
+ExecStart=${RELAY_BIN} --port ${RELAY_PORT} --config ${INSTALL_DIR}/config.toml --seeds ${INSTALL_DIR}/seed_relays.toml
 
 Restart=always
 RestartSec=3
