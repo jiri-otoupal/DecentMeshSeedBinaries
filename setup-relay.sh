@@ -27,26 +27,25 @@ INSTALL_DIR="/opt/decentmesh"
 SERVICE_NAME="decentmesh-relay"
 RELAY_PORT=8888
 SSH_PORT=22
-BINARY_REPO="https://github.com/jiri-otoupal/DecentMeshSeedBinaries/raw/main"
+BINARY_REPO="https://raw.githubusercontent.com/jiri-otoupal/DecentMeshSeedBinaries/refs/heads/master"
 
 ###############################################################################
 #  1.  SYSTEM UPDATE & DEPENDENCIES
 ###############################################################################
 step "1/7  Updating system packages"
-apt-get update -qq
-apt-get upgrade -y -qq
+apt-get update
+apt-get upgrade -y
 ok "System packages updated"
 
 step "1/7  Installing security tools & dependencies"
-apt-get install -y -qq \
+apt-get install -y \
   curl wget unzip \
   ufw fail2ban unattended-upgrades apt-listchanges \
   auditd audispd-plugins \
   lynis \
   acl apparmor apparmor-utils \
   libpam-pwquality \
-  sudo ca-certificates gnupg lsb-release \
-  > /dev/null
+  sudo ca-certificates gnupg lsb-release
 ok "All dependencies installed"
 
 ###############################################################################
@@ -54,11 +53,13 @@ ok "All dependencies installed"
 ###############################################################################
 step "2/7  Creating '${RELAY_USER}' user"
 if id "${RELAY_USER}" &>/dev/null; then
-  ok "User '${RELAY_USER}' already exists"
+  ok "User '${RELAY_USER}' already exists — skipping"
 else
   useradd --system --create-home --shell /bin/bash "${RELAY_USER}"
   ok "User '${RELAY_USER}' created"
 fi
+mkdir -p "${RELAY_HOME}"
+chown "${RELAY_USER}:${RELAY_USER}" "${RELAY_HOME}"
 chmod 750 "${RELAY_HOME}"
 
 ###############################################################################
@@ -97,6 +98,27 @@ chmod +x "${INSTALL_DIR}/relay"
 chown "${RELAY_USER}:${RELAY_USER}" "${INSTALL_DIR}/relay"
 
 ok "Relay binary installed at ${INSTALL_DIR}/relay"
+
+# Download config files from main repo (skip if already present)
+CONFIG_REPO="https://raw.githubusercontent.com/jiri-otoupal/DecentMesh-Relay/refs/heads/master"
+
+if [[ ! -f "${INSTALL_DIR}/config.toml" ]]; then
+  curl -fSL -o "${INSTALL_DIR}/config.toml" "${CONFIG_REPO}/config.toml" \
+    || fail "Failed to download config.toml"
+  chown "${RELAY_USER}:${RELAY_USER}" "${INSTALL_DIR}/config.toml"
+  ok "Downloaded config.toml"
+else
+  ok "config.toml already exists — skipping"
+fi
+
+if [[ ! -f "${INSTALL_DIR}/seed_relays.toml" ]]; then
+  curl -fSL -o "${INSTALL_DIR}/seed_relays.toml" "${CONFIG_REPO}/seed_relays.toml" \
+    || fail "Failed to download seed_relays.toml"
+  chown "${RELAY_USER}:${RELAY_USER}" "${INSTALL_DIR}/seed_relays.toml"
+  ok "Downloaded seed_relays.toml"
+else
+  ok "seed_relays.toml already exists — skipping"
+fi
 
 ###############################################################################
 #  4.  SYSTEMD SERVICE
@@ -178,7 +200,7 @@ INSTEOF
 systemctl disable --now ${SERVICE_NAME}-updater.timer 2>/dev/null || true
 rm -f /etc/systemd/system/${SERVICE_NAME}-updater.service
 rm -f /etc/systemd/system/${SERVICE_NAME}-updater.timer
-rm -f "${PROJECT_DIR}/check-update.sh"
+rm -f "${INSTALL_DIR}/check-update.sh"
 
 systemctl daemon-reload
 systemctl enable --now ${SERVICE_NAME}
