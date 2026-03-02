@@ -100,7 +100,7 @@ chown "${RELAY_USER}:${RELAY_USER}" "${INSTALL_DIR}/relay"
 ok "Relay binary installed at ${INSTALL_DIR}/relay"
 
 # Download config files from main repo (skip if already present)
-CONFIG_REPO="https://raw.githubusercontent.com/jiri-otoupal/DecentMesh-Relay/refs/heads/master"
+CONFIG_REPO="https://raw.githubusercontent.com/jiri-otoupal/DecentMeshSeedBinaries/refs/heads/master"
 
 if [[ ! -f "${INSTALL_DIR}/config.toml" ]]; then
   curl -fSL -o "${INSTALL_DIR}/config.toml" "${CONFIG_REPO}/config.toml" \
