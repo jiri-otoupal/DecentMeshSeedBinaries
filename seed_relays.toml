@@ -1,0 +1,52 @@
+# DecentMesh Relay Network - Seed Relays
+# 
+# This file contains the initial list of relay nodes that clients and new relays
+# will connect to when bootstrapping into the network.
+#
+# Format: Each relay is defined as:
+# [[relay]]
+# address = "IP:PORT"
+# name = "Optional friendly name"
+# region = "Optional region/location"
+
+[[relay]]
+address = "127.0.0.1:8888"
+name = "Local Development Relay A"
+region = "localhost"
+
+[[relay]]
+address = "127.0.0.1:8889"
+name = "Local Development Relay B"
+region = "localhost"
+
+
+# Production seed relays
+[[relay]]
+address = "192.168.0.103:8888"
+name = "Local Network Relay"
+region = "local-network"
+
+[[relay]]
+address = "fe.decentmesh.net:8888"
+name = "DecentMesh FE"
+region = "production"
+
+[[relay]]
+address = "fa.decentmesh.net:8888"
+name = "DecentMesh FA"
+region = "production"
+
+[[relay]]
+address = "cs.decentmesh.net:8888"
+name = "DecentMesh IP Relay"
+region = "production"
+
+[[relay]]
+address = "cn.decentmesh.net:8888"
+name = "DecentMesh CN"
+region = "production"
+
+[[relay]]
+address = "lt.decentmesh.net:8888"
+name = "DecentMesh LT"
+region = "production"

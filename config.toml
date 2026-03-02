@@ -1,0 +1,60 @@
+# DecentMesh Relay Configuration
+
+[difficulty.relay_handshake]
+t_cost = 1
+m_cost = 8
+p_cost = 1
+n_bits = 8
+hash_len_chars = 32
+compression_level = 9
+compression_type = 0
+
+[difficulty.client_handshake]
+t_cost = 1
+m_cost = 8
+p_cost = 1
+n_bits = 16
+hash_len_chars = 32
+compression_level = 9
+compression_type = 0
+
+[difficulty.cmd_difficulty]
+"22" = { Fixed = { t_cost = 1, m_cost = 8, p_cost = 1, n_bits = 16, hash_len_chars = 32, compression_level = 9, compression_type = 0 } }
+"23" = "None"
+"24" = { Fixed = { t_cost = 1, m_cost = 8, p_cost = 1, n_bits = 12, hash_len_chars = 32, compression_level = 9, compression_type = 0 } }
+
+[dht]
+k = 20
+alpha = 3
+bucket_count = 256
+refresh_interval = 3600
+
+[quic]
+bind_addr = "0.0.0.0:8888"
+# bind_addr_v6 = "[::]:8888"
+hole_punching = true
+ipv6 = true
+idle_timeout_ms = 30000
+keep_alive_interval_ms = 5000
+initial_window = 14720
+send_window = 2097152
+max_connections = 4096
+
+[scaling]
+target_bps = 100000.0
+update_interval_seconds = 60.0
+
+[routing]
+relay_ping_interval_seconds = 300
+capacity_weight = 0.7
+latency_weight = 0.3
+min_required_bps = 50000.0
+circuit_max_blocks = 100000
+
+[monitoring]
+enabled = false
+host = "127.0.0.1"
+port = 8008
+json_metrics_only = true
+autostart = false
+metrics_whitelist = ["aI2rTJKT09m89dRRo3pK6B3OTVMZTxjBw17UnPuvrg8"]
