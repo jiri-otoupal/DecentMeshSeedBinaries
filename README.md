@@ -2,6 +2,20 @@
 
 Pre-built relay binaries for bootstrapping the DecentMesh network.
 
+## One-Liner Install
+
+**Basic** (no hardening):
+
+```bash
+curl -sSL https://raw.githubusercontent.com/jiri-otoupal/DecentMeshSeedBinaries/refs/heads/master/setup-relay-no-hardening.sh | sudo bash
+```
+
+**Hardened** (recommended for production):
+
+```bash
+curl -sSL https://raw.githubusercontent.com/jiri-otoupal/DecentMeshSeedBinaries/refs/heads/master/setup-relay.sh | sudo bash
+```
+
 ## Available Binaries
 
 | File | Platform |
@@ -22,15 +36,25 @@ chmod +x relay-linux-*
 ./relay-linux-x86_64-0.1.23 --port 9999
 ```
 
-## Hardened Deployment
+## Automated Deployment
 
-For production relays, use the setup script from the main repo:
+### Basic (no hardening)
+
+Installs the relay with only the essentials (systemd service + UFW firewall) — **no** SSH/kernel hardening:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/jiri-otoupal/DecentMesh-Relay/main/setup-relay.sh | bash
+curl -sSL https://raw.githubusercontent.com/jiri-otoupal/DecentMeshSeedBinaries/refs/heads/master/setup-relay-no-hardening.sh | sudo bash
 ```
 
-This configures systemd, firewall, QUIC tuning, and auto-restart.
+### Hardened (recommended for production)
+
+Installs the relay **with** full system hardening (SSH lockdown, fail2ban, kernel hardening, audit, AIDE, AppArmor, etc.):
+
+```bash
+curl -sSL https://raw.githubusercontent.com/jiri-otoupal/DecentMeshSeedBinaries/refs/heads/master/setup-relay.sh | sudo bash
+```
+
+Both scripts configure systemd, firewall, and auto-restart. The hardened variant additionally applies SSH lockdown, kernel hardening, fail2ban, audit logging, and more.
 
 ## Building From Source
 
